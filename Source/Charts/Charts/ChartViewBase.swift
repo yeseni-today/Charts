@@ -996,3 +996,14 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
         }
     }
 }
+
+// MARK: - Chart Layer Provider
+extension ChartViewBase: ChartLayerProvider {
+    override open class var layerClass: Swift.AnyClass {
+        return CAShapeLayer.self
+    }
+    
+    public var chartLayer: CAShapeLayer {
+        return layer as! CAShapeLayer
+    }
+}
