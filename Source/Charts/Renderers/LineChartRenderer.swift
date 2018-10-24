@@ -26,12 +26,14 @@ open class LineChartRenderer: LineRadarRenderer
     private lazy var accessibilityOrderedElements: [[NSUIAccessibilityElement]] = accessibilityCreateEmptyOrderedElements()
 
     @objc open weak var dataProvider: LineChartDataProvider?
+    @objc open weak var layerProvider: ChartLayerProvider?
     
-    @objc public init(dataProvider: LineChartDataProvider, animator: Animator, viewPortHandler: ViewPortHandler)
+    @objc public init(dataProvider: LineChartDataProvider, layerProvider: ChartLayerProvider, animator: Animator, viewPortHandler: ViewPortHandler)
     {
         super.init(animator: animator, viewPortHandler: viewPortHandler)
         
         self.dataProvider = dataProvider
+        self.layerProvider = layerProvider
     }
     
     open override func drawData(context: CGContext)
@@ -92,7 +94,7 @@ open class LineChartRenderer: LineRadarRenderer
     
     @objc open func drawCubicBezier(context: CGContext, dataSet: ILineChartDataSet)
     {
-        guard let dataProvider = dataProvider else { return }
+        guard let dataProvider = dataProvider, let layerProvider = layerProvider else { return }
         
         let trans = dataProvider.getTransformer(forAxis: dataSet.axisDependency)
         
