@@ -21,12 +21,14 @@ open class LineChartRenderer: LineRadarRenderer
     private lazy var accessibilityOrderedElements: [[NSUIAccessibilityElement]] = accessibilityCreateEmptyOrderedElements()
 
     @objc open weak var dataProvider: LineChartDataProvider?
+    @objc open weak var layerProvider: ChartLayerProvider?
     
-    @objc public init(dataProvider: LineChartDataProvider, animator: Animator, viewPortHandler: ViewPortHandler)
+    @objc public init(dataProvider: LineChartDataProvider, layerProvider: ChartLayerProvider, animator: Animator, viewPortHandler: ViewPortHandler)
     {
         super.init(animator: animator, viewPortHandler: viewPortHandler)
         
         self.dataProvider = dataProvider
+        self.layerProvider = layerProvider
     }
     
     open override func drawData(context: CGContext)
@@ -89,7 +91,7 @@ open class LineChartRenderer: LineRadarRenderer
     
     @objc open func drawCubicBezier(context: CGContext, dataSet: ILineChartDataSet)
     {
-        guard let dataProvider = dataProvider else { return }
+        guard let dataProvider = dataProvider, let layerProvider = layerProvider else { return }
         
         let trans = dataProvider.getTransformer(forAxis: dataSet.axisDependency)
         
@@ -173,10 +175,20 @@ open class LineChartRenderer: LineRadarRenderer
             drawCubicFill(context: context, dataSet: dataSet, spline: fillPath!, matrix: valueToPixelMatrix, bounds: _xBounds)
         }
         
-        context.beginPath()
-        context.addPath(cubicPath)
-        context.setStrokeColor(drawingColor.cgColor)
-        context.strokePath()
+        let layer = layerProvider.chartLayer
+        // TODO: gradients fills
+        // TODO: gradient add gradient animation to animation group.
+        layer.fillColor = dataSet.fill?.color ?? #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        layer.strokeColor = drawingColor.cgColor
+        layer.lineWidth = dataSet.lineWidth
+        layer.path = cubicPath
+        
+        let animation = CABasicAnimation(keyPath: #keyPath(CAShapeLayer.strokeEnd))
+        animation.fromValue = 0
+        // TODO: Pass duration
+        animation.duration = 2
+        layer.add(animation, forKey: "chart")
+ 
         
         context.restoreGState()
     }

@@ -56,7 +56,7 @@ open class CombinedChartRenderer: DataRenderer
             case .line:
                 if chart.lineData !== nil
                 {
-                    _renderers.append(LineChartRenderer(dataProvider: chart, animator: animator, viewPortHandler: viewPortHandler))
+                    _renderers.append(LineChartRenderer(dataProvider: chart, layerProvider: chart, animator: animator, viewPortHandler: viewPortHandler))
                 }
                 break
                 
