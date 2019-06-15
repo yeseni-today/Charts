@@ -1,5 +1,13 @@
 import Foundation
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(Cocoa)
+import Cocoa
+#endif
+
 #if os(iOS) || os(tvOS)
 
 internal func accessibilityPostLayoutChangedNotification(withElement element: Any? = nil)

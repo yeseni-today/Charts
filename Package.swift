@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Charts",
     products: [
-        .library(name: "Charts", type: .dynamic, targets: ["Charts"])
+        .library(name: "Charts", type: .static, targets: ["Charts"])
     ],
     dependencies: [],
     targets: [
